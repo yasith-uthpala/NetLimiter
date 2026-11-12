@@ -8,8 +8,9 @@ import os
 import threading
 from typing import Dict, List, Optional, Tuple
 from core.qos import QosController
+from core.paths import get_app_data_path
 
-RULES_FILE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "rules.json")
+RULES_FILE = get_app_data_path("rules.json")
 
 
 def format_rate(bytes_per_sec: int) -> str:

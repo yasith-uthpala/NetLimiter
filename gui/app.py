@@ -20,6 +20,7 @@ from core.limiter import LimiterEngine
 from core.monitor import SpeedMonitor
 from core.rules import RuleManager, LimitRule, format_rate
 from core.icon_extractor import IconExtractor
+from core.paths import get_resource_path
 from gui.graph_widget import BandwidthGraph
 from gui.rule_dialog import RuleDialog, AddManualRuleDialog, MasterLimitDialog
 
@@ -41,9 +42,8 @@ class NetLimiterApp(ctk.CTk):
         self.minsize(880, 560)
 
         # Asset Paths
-        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.icon_path_ico = os.path.join(self.base_dir, "assets", "icon.ico")
-        self.icon_path_png = os.path.join(self.base_dir, "assets", "icon.png")
+        self.icon_path_ico = get_resource_path(os.path.join("assets", "icon.ico"))
+        self.icon_path_png = get_resource_path(os.path.join("assets", "icon.png"))
 
         if os.path.exists(self.icon_path_ico):
             try:
