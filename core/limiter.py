@@ -11,6 +11,7 @@ from typing import Dict, Optional, Tuple, Any
 
 from core.flow_tracker import FlowTracker
 from core.monitor import SpeedMonitor
+from core.qos import QosController
 from core.rules import RuleManager, LimitRule
 from core.token_bucket import TokenBucket
 
@@ -119,8 +120,28 @@ class LimiterEngine:
         self.flow_tracker.stop()
         self.monitor.stop()
 
+        # Remove all active Windows QoS policies on exit so zero limits remain
+        try:
+            QosController.remove_all()
+        except Exception:
+            pass
+
     def set_global_paused(self, paused: bool):
         self.global_paused = paused
+        if paused:
+            QosController.remove_all()
+        else:
+            # Re-apply active QoS rules when resumed
+            for rule in self.rules.get_all_rules():
+                if rule.enabled and not rule.pid:
+                    rate = rule.outbound_bps if rule.outbound_bps > 0 else rule.inbound_bps
+                    if rate > 0:
+                        QosController.set_app_throttle(rule.app_name, rate)
+            m_en, m_in, m_out = self.rules.get_master_limit()
+            if m_en:
+                rate = m_out or m_in
+                if rate > 0:
+                    QosController.set_master_throttle(rate)
 
     def _capture_loop(self):
         divert = self._divert
