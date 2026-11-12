@@ -1,0 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller build artifacts
+build/
+dist/
+*.spec
+
+# User local rules & logs
+rules.json
+*.log
+wfpstate.xml
+
+# Temporary driver downloads
+drivers/temp/
+drivers/*.zip
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
